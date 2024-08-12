@@ -38,6 +38,10 @@
             background: url('open.jpg') no-repeat center center;
             background-size: cover;
             transform: rotateY(0deg);
+            color: #777777;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
         }
         .page-2 {
             z-index: 1;
@@ -89,7 +93,7 @@
 <body>
     <div class="container" onclick="flipPage()">
         <div class="page page-1" id="page1">
-            <!-- 可以在这里添加第一页的内容 -->
+            点击荧幕任何位置继续...
         </div>
 
         <div class="page page-2" id="page2">
@@ -111,24 +115,8 @@
     </audio>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var music = document.getElementById("birthdayMusic");
-            var icon = document.getElementById("playPauseIcon");
-
-            var playPromise = music.play();
-
-            if (playPromise !== undefined) {
-                playPromise.then(function() {
-                    icon.innerHTML = '&#10074;&#10074;'; // Pause icon
-                }).catch(function(error) {
-                    console.log('Auto-play was prevented: ', error);
-                    // Show some user interface to prompt the user to interact with the page
-                });
-            }
-        });
-
         function toggleMusic(event) {
-            event.stopPropagation(); // 防止点击按钮时触发翻页
+            event.stopPropagation();
             var music = document.getElementById("birthdayMusic");
             var icon = document.getElementById("playPauseIcon");
 
@@ -145,13 +133,23 @@
             var page1 = document.getElementById("page1");
             var page2 = document.getElementById("page2");
 
-            if (page1.style.transform === "rotateY(180deg)") {
-                page1.style.transform = "rotateY(0deg)";
-                page2.style.transform = "rotateY(-180deg)";
-            } else {
-                page1.style.transform = "rotateY(180deg)";
-                page2.style.transform = "rotateY(0deg)";
-            }
+            page1.style.transform = "rotateY(180deg)";
+            page2.style.transform = "rotateY(0deg)";
+
+            setTimeout(function() {
+                var music = document.getElementById("birthdayMusic");
+                var icon = document.getElementById("playPauseIcon");
+
+                var playPromise = music.play();
+
+                if (playPromise !== undefined) {
+                    playPromise.then(function() {
+                        icon.innerHTML = '&#10074;&#10074;'; // Pause icon
+                    }).catch(function(error) {
+                        console.log('Auto-play was prevented: ', error);
+                    });
+                }
+            }, 1000);
         }
     </script>
 </body>
