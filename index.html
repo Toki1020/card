@@ -9,11 +9,9 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            background: url('bg.jpg') no-repeat center center fixed;
-            background-size: cover;
-            background-position: center center;
+            background: #000;
             color: #fff;
-            text-align: center;
+            overflow: hidden;
         }
         .container {
             display: flex;
@@ -21,6 +19,31 @@
             align-items: center;
             height: 100vh;
             flex-direction: column;
+            position: relative;
+            perspective: 1000px;
+        }
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backface-visibility: hidden;
+            transition: transform 1s ease;
+        }
+        .page-1 {
+            z-index: 2;
+            background: url('open.jpg') no-repeat center center;
+            background-size: cover;
+            transform: rotateY(0deg);
+        }
+        .page-2 {
+            z-index: 1;
+            background: url('bg.jpg') no-repeat center center;
+            background-size: cover;
+            transform: rotateY(-180deg);
         }
         .message {
             font-size: 2em;
@@ -29,6 +52,7 @@
             border-radius: 10px;
             max-width: 80%;
             margin: 20px;
+            text-align: center;
         }
         .icon {
             font-size: 5em;
@@ -63,16 +87,22 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="icon">🎂</div>
-        <div class="message">
-            祝你生日快乐！🎉<br>
-            本来是要让Hillary来送给你的但是他不得空就没办法啦<br>
-            希望你会喜欢这个礼物
+    <div class="container" onclick="flipPage()">
+        <div class="page page-1" id="page1">
+            <!-- 可以在这里添加第一页的内容 -->
         </div>
-        <button class="play-btn" id="playPauseBtn" onclick="toggleMusic()">
-            <span id="playPauseIcon">&#9654;</span> <!-- Play icon -->
-        </button>
+
+        <div class="page page-2" id="page2">
+            <div class="icon">🎂</div>
+            <div class="message">
+                祝你生日快乐！🎉<br>
+                本来是要让Hillary来送给你的但是他不得空就没办法啦<br>
+                希望你会喜欢这个礼物
+            </div>
+            <button class="play-btn" id="playPauseBtn" onclick="toggleMusic(event)">
+                <span id="playPauseIcon">&#9654;</span> <!-- Play icon -->
+            </button>
+        </div>
     </div>
 
     <audio id="birthdayMusic">
@@ -81,9 +111,25 @@
     </audio>
 
     <script>
-        function toggleMusic() {
+        document.addEventListener('DOMContentLoaded', function() {
             var music = document.getElementById("birthdayMusic");
-            var button = document.getElementById("playPauseBtn");
+            var icon = document.getElementById("playPauseIcon");
+
+            var playPromise = music.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(function() {
+                    icon.innerHTML = '&#10074;&#10074;'; // Pause icon
+                }).catch(function(error) {
+                    console.log('Auto-play was prevented: ', error);
+                    // Show some user interface to prompt the user to interact with the page
+                });
+            }
+        });
+
+        function toggleMusic(event) {
+            event.stopPropagation(); // 防止点击按钮时触发翻页
+            var music = document.getElementById("birthdayMusic");
             var icon = document.getElementById("playPauseIcon");
 
             if (music.paused) {
@@ -92,6 +138,19 @@
             } else {
                 music.pause();
                 icon.innerHTML = '&#9654;'; // Play icon
+            }
+        }
+
+        function flipPage() {
+            var page1 = document.getElementById("page1");
+            var page2 = document.getElementById("page2");
+
+            if (page1.style.transform === "rotateY(180deg)") {
+                page1.style.transform = "rotateY(0deg)";
+                page2.style.transform = "rotateY(-180deg)";
+            } else {
+                page1.style.transform = "rotateY(180deg)";
+                page2.style.transform = "rotateY(0deg)";
             }
         }
     </script>
